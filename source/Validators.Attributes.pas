@@ -49,12 +49,6 @@ type
     function DoValidate(aValue: string): boolean; override;
   end;
 
-  CustomValidationAttribute = class(ValidationAttribute)
-  public
-    constructor Create(aContext: string; aMessage: string);
-    procedure Validate(aValue: string);
-  end;
-
 implementation
 
 uses
@@ -113,17 +107,6 @@ begin
   if (not lValid) then
     aBrokenRules := aBrokenRules + [FMessage];
   Result := Length(aBrokenRules) <= 0;
-end;
-
-{ CustomValidationAttribute }
-
-constructor CustomValidationAttribute.Create(aContext, aMessage: string);
-begin
-  inherited Create(aContext, aMessage);
-end;
-
-procedure CustomValidationAttribute.Validate(aValue: string);
-begin
 end;
 
 { MinLengthValidationAttribute }

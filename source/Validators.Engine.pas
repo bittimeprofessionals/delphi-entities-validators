@@ -3,14 +3,15 @@ unit Validators.Engine;
 interface
 
 uses
-  System.RTTI;
+  System.RTTI, System.JSON;
 
 type
 
   TBrokenRules = array of string;
 
   TBrokenRulesHelper = record helper for TBrokenRules
-    function Implode: string;
+  private
+    function asJsonArray: TJSONArray;
   end;
 
   IValidator<T: class> = interface
@@ -42,14 +43,13 @@ uses
 
 { TBrokenRulesHelper }
 
-function TBrokenRulesHelper.Implode: string;
+function TBrokenRulesHelper.asJsonArray: TJSONArray;
 var
   I: Integer;
 begin
-  Result := '[ ';
+  Result := TJSONArray.Create;
   for I := Low(self) to High(self) do
-    Result := Result + self[I] + ', ';
-  Result := Result + ']';
+    Result.Add(self[I]);
 end;
 
 { TRunTimeValidator }
@@ -94,7 +94,7 @@ begin
     end;
   Result := Length(aBrokenRules) <= 0;
   if (not Result) and (aRaiseException) then
-    raise Exception.Create(aBrokenRules.Implode);
+    raise Exception.Create(aBrokenRules.asJsonArray.ToJSON);
 end;
 
 end.

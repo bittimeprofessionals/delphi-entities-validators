@@ -3,19 +3,15 @@ unit Validators.Attributes.Tests;
 interface
 
 uses
-  DUnitX.TestFramework, Validators.Attributes, Validators.Engine;
+  DUnitX.TestFramework, Validators.Attributes, Validators.Engine, BOU;
 
 type
 
   [TestFixture]
-  TValidatorsAttributesTests = class(TObject)
+  TValidatorsAttributesTests = class(TBaseTests)
   private
     FBrokenRules: TBrokenRules;
   public
-    [Setup]
-    procedure Setup;
-    [TearDown]
-    procedure TearDown;
     [TestCase('TestPropertyRequired', '')]
     procedure TestPropertyRequired;
     [TestCase('TestMaxLenthValidationOKtony', 'tony')]
@@ -48,26 +44,15 @@ type
 
 implementation
 
-uses
-  BOU;
-
-procedure TValidatorsAttributesTests.Setup;
-begin
-  FBrokenRules := [];
-end;
-
-procedure TValidatorsAttributesTests.TearDown;
-begin
-end;
-
 procedure TValidatorsAttributesTests.TestRegexEmailValidationKO(aEmail: string);
 var
   lPerson: TPerson;
 begin
   lPerson := TPerson.Create('Tony', 'Stark', aEmail);
   try
-    Assert.IsFalse(TValidationEngine.Validate(lPerson,
-      'TestRegexEmailValidation', FBrokenRules));
+    TValidationEngine.PropertyValidation(lPerson, 'TestRegexEmailValidation',
+      FBoolValidator);
+    Assert.IsFalse(FBoolValidator);
   finally
     lPerson.Free;
   end;
@@ -79,8 +64,9 @@ var
 begin
   lPerson := TPerson.Create('Tony', 'Stark', aEmail);
   try
-    Assert.IsTrue(TValidationEngine.Validate(lPerson,
-      'TestRegexEmailValidation', FBrokenRules));
+    TValidationEngine.PropertyValidation(lPerson, 'TestRegexEmailValidation',
+      FBoolValidator);
+    Assert.IsTrue(FBoolValidator);
   finally
     lPerson.Free;
   end;
@@ -93,8 +79,9 @@ var
 begin
   lPerson := TPerson.Create(aFirstname, '', '');
   try
-    Assert.IsFalse(TValidationEngine.Validate(lPerson, 'TestMaxLenthValidation',
-      FBrokenRules));
+    FBrokenRules := TValidationEngine.PropertyValidation(lPerson,
+      'TestMaxLenthValidation', FBoolValidator);
+    Assert.IsFalse(FBoolValidator);
     Assert.AreEqual(1, Length(FBrokenRules));
   finally
     lPerson.Free;
@@ -108,8 +95,9 @@ var
 begin
   lPerson := TPerson.Create(aFirstname, '', '');
   try
-    Assert.IsTrue(TValidationEngine.Validate(lPerson, 'TestMaxLenthValidation',
-      FBrokenRules));
+    TValidationEngine.PropertyValidation(lPerson, 'TestMaxLenthValidation',
+      FBoolValidator);
+    Assert.IsTrue(FBoolValidator);
   finally
     lPerson.Free;
   end;
@@ -122,8 +110,9 @@ var
 begin
   lPerson := TPerson.Create(aFirstname, '', '');
   try
-    Assert.IsFalse(TValidationEngine.Validate(lPerson, 'TestMinLenthValidation',
-      FBrokenRules));
+    TValidationEngine.PropertyValidation(lPerson, 'TestMinLenthValidation',
+      FBoolValidator);
+    Assert.IsFalse(FBoolValidator);
   finally
     lPerson.Free;
   end;
@@ -136,8 +125,9 @@ var
 begin
   lPerson := TPerson.Create(aFirstname, '', '');
   try
-    Assert.IsTrue(TValidationEngine.Validate(lPerson, 'TestMinLenthValidation',
-      FBrokenRules));
+    TValidationEngine.PropertyValidation(lPerson, 'TestMinLenthValidation',
+      FBoolValidator);
+    Assert.IsTrue(FBoolValidator);
   finally
     lPerson.Free;
   end;
@@ -149,8 +139,9 @@ var
 begin
   lPerson := TPerson.Create('Tony', 'Stark', 't.stark@marvel.com');
   try
-    Assert.IsTrue(TValidationEngine.Validate(lPerson, 'TValidatorsRunTimeTests',
-      FBrokenRules));
+    TValidationEngine.PropertyValidation(lPerson, 'TValidatorsRunTimeTests',
+      FBoolValidator);
+    Assert.IsTrue(FBoolValidator);
   finally
     lPerson.Free;
   end;

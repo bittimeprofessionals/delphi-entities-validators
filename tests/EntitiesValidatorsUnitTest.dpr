@@ -6,16 +6,17 @@ program EntitiesValidatorsUnitTest;
 
 uses
   System.SysUtils,
-{$IFDEF TESTINSIGHT}
+  {$IFDEF TESTINSIGHT}
   TestInsight.DUnitX,
-{$ENDIF }
+  {$ENDIF }
   DUnitX.Loggers.Console,
   DUnitX.Loggers.Xml.NUnit,
   DUnitX.TestFramework,
   Validators.Attributes.Tests in 'Validators.Attributes.Tests.pas',
   BOU in 'BOU.pas',
   Validators.Engine in '..\source\Validators.Engine.pas',
-  Validators.Attributes in '..\source\Validators.Attributes.pas';
+  Validators.Attributes in '..\source\Validators.Attributes.pas',
+  Validators.Custom.Tests in 'Validators.Custom.Tests.pas';
 
 var
   runner: ITestRunner;

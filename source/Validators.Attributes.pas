@@ -20,7 +20,7 @@ type
   public
     constructor Create(aContext: string; aMessage: string);
     property Context: string read FContext;
-    function Validate(aValue: string; out aBrokenRules: TBrokenRules): boolean;
+    function Validate(aValue: string; out aIsValid: boolean): TBrokenRules;
   end;
 
   RequiredValidationAttribute = class(ValidationAttribute)
@@ -47,6 +47,9 @@ type
   public
     constructor Create(aContext: string; aMessage: string; aRegex: string);
     function DoValidate(aValue: string): boolean; override;
+  end;
+
+  EntityValidationAttribute = class(ValidationAttribute)
   end;
 
 implementation
@@ -98,15 +101,12 @@ begin
   FContext := aContext;
 end;
 
-function ValidationAttribute.Validate(aValue: string;
-  out aBrokenRules: TBrokenRules): boolean;
-var
-  lValid: boolean;
+function ValidationAttribute.Validate(aValue: string; out aIsValid: boolean)
+  : TBrokenRules;
 begin
-  lValid := DoValidate(aValue);
-  if (not lValid) then
-    aBrokenRules := aBrokenRules + [FMessage];
-  Result := Length(aBrokenRules) <= 0;
+  aIsValid := DoValidate(aValue);
+  if (not aIsValid) then
+    Result := [FMessage];
 end;
 
 { MinLengthValidationAttribute }

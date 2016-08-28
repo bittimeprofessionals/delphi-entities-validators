@@ -8,9 +8,6 @@ uses
 type
 
   TBaseTests = class(TObject)
-  protected
-    FBrokenRules: TBrokenRules;
-    FBoolValidator: boolean;
   public
     [Setup]
     procedure Setup;
@@ -18,7 +15,6 @@ type
     procedure TearDown;
   end;
 
-  [EntityValidation('PersonLoginValidation', '')]
   TPerson = class
   private
     FEmail: string;
@@ -47,7 +43,7 @@ type
 
   TPersonLoginValidator = class(TInterfacedObject, IValidator<TPerson>)
   public
-    function Validate(aEntity: TPerson; out aIsValid: boolean): TBrokenRules;
+    function Validate(aEntity: TPerson): IValidationResult;
   end;
 
 implementation
@@ -87,21 +83,22 @@ end;
 
 { TPersonLoginValidator<TPerson> }
 
-function TPersonLoginValidator.Validate(aEntity: TPerson; out aIsValid: boolean)
-  : TBrokenRules;
+function TPersonLoginValidator.Validate(aEntity: TPerson): IValidationResult;
+var
+  lIsValid: boolean;
 begin
-  aIsValid := not(aEntity.Firstname.IsEmpty or aEntity.Lastname.IsEmpty or
+  Result := TValidationResult.Create;
+  lIsValid := not(aEntity.Firstname.IsEmpty or aEntity.Lastname.IsEmpty or
     aEntity.Email.IsEmpty);
-  if not aIsValid then
-    Result := ['The fields Firstname, Lastname and Email are mandatory '];
+  if not lIsValid then
+    Result.BrokenRules :=
+      ['The fields Firstname, Lastname and Email are mandatory '];
 end;
 
 { TBaseTests }
 
 procedure TBaseTests.Setup;
 begin
-  FBrokenRules := [];
-  FBoolValidator := false;
 end;
 
 procedure TBaseTests.TearDown;

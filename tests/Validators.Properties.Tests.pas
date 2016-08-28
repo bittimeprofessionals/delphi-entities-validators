@@ -1,4 +1,4 @@
-unit Validators.Attributes.Tests;
+unit Validators.Properties.Tests;
 
 interface
 
@@ -8,9 +8,7 @@ uses
 type
 
   [TestFixture]
-  TValidatorsAttributesTests = class(TBaseTests)
-  private
-    FBrokenRules: TBrokenRules;
+  TValidatorsPropertiesTests = class(TBaseTests)
   public
     [TestCase('TestPropertyRequired', '')]
     procedure TestPropertyRequired;
@@ -44,104 +42,99 @@ type
 
 implementation
 
-procedure TValidatorsAttributesTests.TestRegexEmailValidationKO(aEmail: string);
+procedure TValidatorsPropertiesTests.TestRegexEmailValidationKO(aEmail: string);
+var
+  lPerson: TPerson;
+begin
+  lPerson := TPerson.Create('Tony', 'Stark', aEmail);
+  try;
+    Assert.IsFalse(TValidationEngine.PropertyValidation(lPerson,
+      'TestRegexEmailValidation').IsValid);
+  finally
+    lPerson.Free;
+  end;
+end;
+
+procedure TValidatorsPropertiesTests.TestRegexEmailValidationOk(aEmail: string);
 var
   lPerson: TPerson;
 begin
   lPerson := TPerson.Create('Tony', 'Stark', aEmail);
   try
-    TValidationEngine.PropertyValidation(lPerson, 'TestRegexEmailValidation',
-      FBoolValidator);
-    Assert.IsFalse(FBoolValidator);
+    Assert.IsTrue(TValidationEngine.PropertyValidation(lPerson,
+      'TestRegexEmailValidation').IsValid);
   finally
     lPerson.Free;
   end;
 end;
 
-procedure TValidatorsAttributesTests.TestRegexEmailValidationOk(aEmail: string);
+procedure TValidatorsPropertiesTests.TestMaxLenthValidationKO
+  (aFirstname: string);
 var
   lPerson: TPerson;
+  lResult: IValidationResult;
 begin
-  lPerson := TPerson.Create('Tony', 'Stark', aEmail);
+  lPerson := TPerson.Create(aFirstname, '', '');
   try
-    TValidationEngine.PropertyValidation(lPerson, 'TestRegexEmailValidation',
-      FBoolValidator);
-    Assert.IsTrue(FBoolValidator);
+    lResult := TValidationEngine.PropertyValidation(lPerson,
+      'TestMaxLenthValidation');
+    Assert.IsFalse(lResult.IsValid);
+    Assert.AreEqual(1, Length(lResult.BrokenRules));
   finally
     lPerson.Free;
   end;
 end;
 
-procedure TValidatorsAttributesTests.TestMaxLenthValidationKO
+procedure TValidatorsPropertiesTests.TestMaxLenthValidationOK
   (aFirstname: string);
 var
   lPerson: TPerson;
 begin
   lPerson := TPerson.Create(aFirstname, '', '');
   try
-    FBrokenRules := TValidationEngine.PropertyValidation(lPerson,
-      'TestMaxLenthValidation', FBoolValidator);
-    Assert.IsFalse(FBoolValidator);
-    Assert.AreEqual(1, Length(FBrokenRules));
+    Assert.IsTrue(TValidationEngine.PropertyValidation(lPerson,
+      'TestMaxLenthValidation').IsValid);
   finally
     lPerson.Free;
   end;
 end;
 
-procedure TValidatorsAttributesTests.TestMaxLenthValidationOK
+procedure TValidatorsPropertiesTests.TestMinLenthValidationKO
   (aFirstname: string);
 var
   lPerson: TPerson;
 begin
   lPerson := TPerson.Create(aFirstname, '', '');
   try
-    TValidationEngine.PropertyValidation(lPerson, 'TestMaxLenthValidation',
-      FBoolValidator);
-    Assert.IsTrue(FBoolValidator);
+    Assert.IsFalse(TValidationEngine.PropertyValidation(lPerson,
+      'TestMinLenthValidation').IsValid);
   finally
     lPerson.Free;
   end;
 end;
 
-procedure TValidatorsAttributesTests.TestMinLenthValidationKO
+procedure TValidatorsPropertiesTests.TestMinLenthValidationOK
   (aFirstname: string);
 var
   lPerson: TPerson;
 begin
   lPerson := TPerson.Create(aFirstname, '', '');
   try
-    TValidationEngine.PropertyValidation(lPerson, 'TestMinLenthValidation',
-      FBoolValidator);
-    Assert.IsFalse(FBoolValidator);
+    Assert.IsTrue(TValidationEngine.PropertyValidation(lPerson,
+      'TestMinLenthValidation').IsValid);
   finally
     lPerson.Free;
   end;
 end;
 
-procedure TValidatorsAttributesTests.TestMinLenthValidationOK
-  (aFirstname: string);
-var
-  lPerson: TPerson;
-begin
-  lPerson := TPerson.Create(aFirstname, '', '');
-  try
-    TValidationEngine.PropertyValidation(lPerson, 'TestMinLenthValidation',
-      FBoolValidator);
-    Assert.IsTrue(FBoolValidator);
-  finally
-    lPerson.Free;
-  end;
-end;
-
-procedure TValidatorsAttributesTests.TestPropertyRequired;
+procedure TValidatorsPropertiesTests.TestPropertyRequired;
 var
   lPerson: TPerson;
 begin
   lPerson := TPerson.Create('Tony', 'Stark', 't.stark@marvel.com');
   try
-    TValidationEngine.PropertyValidation(lPerson, 'TValidatorsRunTimeTests',
-      FBoolValidator);
-    Assert.IsTrue(FBoolValidator);
+    Assert.IsTrue(TValidationEngine.PropertyValidation(lPerson,
+      'TValidatorsRunTimeTests').IsValid);
   finally
     lPerson.Free;
   end;
@@ -149,6 +142,6 @@ end;
 
 initialization
 
-TDUnitX.RegisterTestFixture(TValidatorsAttributesTests);
+TDUnitX.RegisterTestFixture(TValidatorsPropertiesTests);
 
 end.

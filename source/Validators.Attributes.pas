@@ -20,7 +20,7 @@ type
   public
     constructor Create(aContext: string; aMessage: string);
     property Context: string read FContext;
-    function Validate(aValue: string; out aIsValid: boolean): TBrokenRules;
+    function Validate(aValue: string): IValidationResult;
   end;
 
   RequiredValidationAttribute = class(ValidationAttribute)
@@ -101,12 +101,14 @@ begin
   FContext := aContext;
 end;
 
-function ValidationAttribute.Validate(aValue: string; out aIsValid: boolean)
-  : TBrokenRules;
+function ValidationAttribute.Validate(aValue: string): IValidationResult;
+var
+  lIsValid: boolean;
 begin
-  aIsValid := DoValidate(aValue);
-  if (not aIsValid) then
-    Result := [FMessage];
+  Result := TValidationResult.Create;
+  lIsValid := DoValidate(aValue);
+  if (not lIsValid) then
+    Result.AddBrokenRules([FMessage]);
 end;
 
 { MinLengthValidationAttribute }

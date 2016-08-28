@@ -12,7 +12,7 @@ uses
   DUnitX.Loggers.Console,
   DUnitX.Loggers.Xml.NUnit,
   DUnitX.TestFramework,
-  Validators.Attributes.Tests in 'Validators.Attributes.Tests.pas',
+  Validators.Properties.Tests in 'Validators.Properties.Tests.pas',
   BOU in 'BOU.pas',
   Validators.Engine in '..\source\Validators.Engine.pas',
   Validators.Attributes in '..\source\Validators.Attributes.pas',

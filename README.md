@@ -1,19 +1,19 @@
 # Delphi Entities Validators
 
-Delphi Entities Validators is a small framework that provides an easy and ready-to-use interface for entity objects validation.
+Delphi Entities Validators is a small framework that provides an easy and ready-to-use interface for entities validation.
 
 ## How it works
 
 ### Simple Validation
 ```Delphi
-TPersonLoginValidator = class(TInterfacedObject, IValidator<TPerson>)
+TPersonValidator = class(TInterfacedObject, IValidator<TPerson>)
   public
     function Validate(aEntity: TPerson): IValidationResult;
   end;
   
   implementation
   
-  function TPersonLoginValidator.Validate(aEntity: TPerson): IValidationResult;
+  function TPersonValidator.Validate(aEntity: TPerson): IValidationResult;
 var
   lIsValid: boolean;
 begin
@@ -25,8 +25,8 @@ end;
 
 ...
 
-lPersonLoginValidator := TPersonLoginValidator.Create;
-lValidationResult := lPersonLoginValidator.Validate(lPerson);
+lPersonValidator := TPersonValidator.Create;
+lValidationResult := lPersonValidator.Validate(lPerson);
 lValidationResult.IsValid; // returns a boolean that represents the success or failures validation
 lValidationResult.BrokenRules; // returns an array of string that represents the broken rules
 ```
@@ -54,7 +54,7 @@ lValidationResult := TValidationEngine.PropertyValidation(lPerson, 'AttributesVa
 lValidationResult.IsValid; // returns a boolean that represents the success or failures validation
 lValidationResult.BrokenRules; // returns an array of string that represents the broken rules 
 ```
-### Using IoC Container
+### Using container
 ```Delphi
 TPersonLoginValidator = class(TInterfacedObject, IValidator<TPerson>)
   public

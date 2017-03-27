@@ -8,7 +8,8 @@ uses
 const
   EmailRegex
     : string =
-    '/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/';
+    '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$';
+    //'/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/';
 
 type
 
@@ -47,6 +48,10 @@ type
   public
     constructor Create(aContext: string; aMessage: string; aRegex: string);
     function DoValidate(aValue: string): boolean; override;
+  end;
+
+  EmailValidationAttribute = class(RegexValidationAttribute)
+    constructor Create(aContext: string; aMessage: string);
   end;
 
   EntityValidationAttribute = class(ValidationAttribute)
@@ -116,6 +121,13 @@ end;
 function MinLengthValidationAttribute.DoValidate(aValue: string): boolean;
 begin
   Result := Length(aValue) >= FLength;
+end;
+
+{ EmailValidationAttribute }
+
+constructor EmailValidationAttribute.Create(aContext, aMessage: string);
+begin
+  inherited Create(aContext, aMessage, EmailRegex);
 end;
 
 end.

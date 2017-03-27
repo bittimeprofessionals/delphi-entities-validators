@@ -25,6 +25,16 @@ type
     [TestCase('TestMinLenthValidationKOtony', 'ton')]
     [TestCase('TestMinLenthValidationKOstark', 'st')]
     procedure TestMinLenthValidationKO(aFirstname: string);
+
+    [TestCase('TestRegexPwdValidation_Pippolo1!', 'Pippolo1!')]
+    [TestCase('TestRegexPwdValidation_pippolo1!', 'Pippolo!1')]
+    procedure TestRegexPwdValidationOk(aPwd: string);
+
+    [TestCase('TestRegexPwdValidation_Pilo1!', 'Pilo1!')]
+    [TestCase('TestRegexPwdValidation_pippolo', 'pippolo')]
+    [TestCase('TestRegexPwdValidation_Pippolo1', 'Pippolo1')]
+    procedure TestRegexPwdValidationKO(aPwd: string);
+
     [TestCase('TestRegexEmailValidationOKt.stark@marvel.com',
       't.stark@marvel.com')
       ]
@@ -33,16 +43,17 @@ type
       ]
     [TestCase('TestRegexEmailValidationOKt.stark@marvel.eu',
       't.stark@marvel.eu')]
-    procedure TestRegexEmailValidationOk(aEmail: string);
+    procedure TestEmailValidationOk(aEmail: string);
     [TestCase('TestRegexEmailValidationKOt.stark', 't.stark')]
     [TestCase('TestRegexEmailValidationKOt.stark@marvel.', 't.stark@marvel.')]
     [TestCase('TestRegexEmailValidationKOt.stark@marvel', 't.stark@marvel')]
-    procedure TestRegexEmailValidationKO(aEmail: string);
+    procedure TestEmailValidationKO(aEmail: string);
+
   end;
 
 implementation
 
-procedure TValidatorsPropertiesTests.TestRegexEmailValidationKO(aEmail: string);
+procedure TValidatorsPropertiesTests.TestEmailValidationKO(aEmail: string);
 var
   lPerson: TPerson;
 begin
@@ -55,7 +66,7 @@ begin
   end;
 end;
 
-procedure TValidatorsPropertiesTests.TestRegexEmailValidationOk(aEmail: string);
+procedure TValidatorsPropertiesTests.TestEmailValidationOk(aEmail: string);
 var
   lPerson: TPerson;
 begin
@@ -63,6 +74,32 @@ begin
   try
     Assert.IsTrue(TValidationEngine.PropertyValidation(lPerson,
       'TestRegexEmailValidation').IsValid);
+  finally
+    lPerson.Free;
+  end;
+end;
+
+procedure TValidatorsPropertiesTests.TestRegexPwdValidationKO(aPwd: string);
+var
+  lPerson: TPerson;
+begin
+  lPerson := TPerson.Create('Tony', 'Stark', '', aPwd);
+  try
+    Assert.IsFalse(TValidationEngine.PropertyValidation(lPerson,
+      'TestRegexPwdValidation').IsValid);
+  finally
+    lPerson.Free;
+  end;
+end;
+
+procedure TValidatorsPropertiesTests.TestRegexPwdValidationOk(aPwd: string);
+var
+  lPerson: TPerson;
+begin
+  lPerson := TPerson.Create('Tony', 'Stark', '', aPwd);
+  try
+    Assert.IsTrue(TValidationEngine.PropertyValidation(lPerson,
+      'TestRegexPwdValidation').IsValid);
   finally
     lPerson.Free;
   end;

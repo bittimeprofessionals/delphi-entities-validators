@@ -21,12 +21,14 @@ type
     FLastname: string;
     FFirstname: string;
     FAddress: string;
+    FPwd: string;
     procedure SetEmail(const Value: string);
     procedure SetFirstname(const Value: string);
     procedure SetLastname(const Value: string);
     procedure SetAddress(const Value: string);
+    procedure SetPwd(const Value: string);
   public
-    constructor Create(aFirstname, aLastname, aEmail: string);
+    constructor Create(aFirstname, aLastname, aEmail: string; aPwd: string = '');
     [RequiredValidation('TestRequiredValidation', 'Firstname is required')]
     [MaxLengthValidation('TestMaxLenthValidation', 'Firstname is too long', 8)]
     [MinLengthValidation('TestMinLenthValidation', 'Firstname is too short', 4)]
@@ -34,11 +36,12 @@ type
     [RequiredValidation('TestRequiredValidation', 'Firstname is required')]
     property Lastname: string read FLastname write SetLastname;
     [RequiredValidation('TestRequiredValidation', 'Firstname is required')]
-    [RegexValidation('TestRegexEmailValidation', 'Email wrong',
-      '^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-      ]
+    [EmailValidation('TestRegexEmailValidation', 'Email wrong')]
     property Email: string read FEmail write SetEmail;
     property Address: string read FAddress write SetAddress;
+    [RegexValidation('TestRegexPwdValidation', 'Password not valid',
+      '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}')]
+    property Pwd: string read FPwd write SetPwd;
   end;
 
   TPersonLoginValidator = class(TInterfacedObject, IValidator<TPerson>)
@@ -53,12 +56,13 @@ uses
 
 { TPerson }
 
-constructor TPerson.Create(aFirstname, aLastname, aEmail: string);
+constructor TPerson.Create(aFirstname, aLastname, aEmail, aPwd: string);
 begin
   inherited Create;
   FFirstname := aFirstname;
   FLastname := aLastname;
   FEmail := aEmail;
+  FPwd := aPwd;
 end;
 
 procedure TPerson.SetAddress(const Value: string);
@@ -79,6 +83,11 @@ end;
 procedure TPerson.SetLastname(const Value: string);
 begin
   FLastname := Value;
+end;
+
+procedure TPerson.SetPwd(const Value: string);
+begin
+  FPwd := Value;
 end;
 
 { TPersonLoginValidator<TPerson> }

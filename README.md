@@ -1,19 +1,20 @@
 # Delphi Entities Validators
 
-Delphi Entities Validators is a small framework that provides an easy and ready-to-use interface for entities validation.
+Delphi Entities Validators is a microframework that provides an easy and ready-to-use interface for entities validation.
 
 ## How it works
 
 ### Simple Validation
 ```Delphi
-TPersonValidator = class(TInterfacedObject, IValidator<TPerson>)
+type
+  TPersonValidator = class(TInterfacedObject, IValidator<TPerson>)
   public
     function Validate(aEntity: TPerson): IValidationResult;
   end;
   
-  implementation
+implementation
   
-  function TPersonValidator.Validate(aEntity: TPerson): IValidationResult;
+function TPersonValidator.Validate(aEntity: TPerson): IValidationResult;
 var
   lIsValid: boolean;
 begin
